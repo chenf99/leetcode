@@ -27,6 +27,7 @@ using namespace std;
 
 class Solution {
 public:
+    /*
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
         int m = nums1.size();
         int n = nums2.size();
@@ -42,14 +43,46 @@ public:
         }
         return (m + n) % 2 == 0 ? (sortedArr[mid - 1] + sortedArr[mid]) / 2.0 : sortedArr[mid];
     }
+    */
+   double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+       int m = nums1.size();
+       int n = nums2.size();
+       if (m > n) {     //确保n>=m
+            nums1.swap(nums2);
+            int temp = m;
+            m = n;
+            n = temp;
+       }
+       int imin = 0, imax = m, mid = (m + n) / 2;
+       while (imin <= imax) {
+            int i = (imin + imax) / 2;
+            int j = mid - i;
+            if (i > imin && nums1[i - 1] > nums2[j]) imax = i - 1;
+            else if (i < imax && nums2[j - 1] > nums1[i]) imin = i + 1;
+            else {//找到了使max(left) < min(right)的i
+                int minRight;
+                if (i == m) minRight = nums2[j];
+                else if (j == n) minRight = nums1[i];
+                else minRight = min(nums1[i], nums2[j]);
+                if ((m + n) % 2 != 0) return minRight;
+
+                int maxLeft;
+                if (i == 0) maxLeft = nums2[j - 1];
+                else if (j == 0) maxLeft = nums1[i - 1];
+                else maxLeft = max(nums1[i - 1], nums2[j - 1]);
+
+                return (maxLeft + minRight) / 2.0;
+            }
+       }
+   }
 };
 
 int main() {
     Solution test;
-    int a[2] = {2, 2};
-    int b[2] = {1, 1};
+    int a[2] = {1, 3};
+    int b[1] = {2};
     vector<int> nums1(a, a + 2);
-    vector<int> nums2(b, b + 2);
+    vector<int> nums2(b, b + 1);
     
     cout << Solution().findMedianSortedArrays(nums1, nums2);
 }
