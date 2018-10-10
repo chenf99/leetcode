@@ -31,7 +31,7 @@ class Solution {
 public:
     int candy(const vector<int>& ratings) {
         vector<int> candy(ratings.size(), 0);
-        //从两边开始分别
+        //从两边开始分别遍历一次
         for (int i = 1; i < ratings.size(); ++i) {
             if (ratings[i] > ratings[i - 1]) {
                 candy[i] = candy[i - 1] + 1;
