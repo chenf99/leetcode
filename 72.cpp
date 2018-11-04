@@ -34,12 +34,12 @@ exection -> execution (insert 'u')
 using std::min;
 using std::string;
 
+/*解法一，没有优化空间复杂度
 class Solution {
 public:
     int minDistance(string word1, string word2) {
-        /*对于长度为i的word1子串和长度为j的word2子串
-        **dist[i][j]表示这两个子串之间的编辑距离
-        */
+        //对于长度为i的word1子串和长度为j的word2子串
+        //dist[i][j]表示这两个子串之间的编辑距离
        int m = word1.length(), n = word2.length();
        int dist[m + 1][n + 1];
        for (int i = 0; i <= m; ++i) {
@@ -62,7 +62,38 @@ private:
         return !(c1 == c2);
     }
 };
+*/
 
+//解法二，优化空间复杂度
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        //对于长度为i的word1子串和长度为j的word2子串
+        //dist[i][j]表示这两个子串之间的编辑距离
+       int m = word1.length(), n = word2.length();
+       if (m == 0) return n;
+       if (n == 0) return m;
+       int dist[n + 1];
+       for (int i = 0; i <= n; ++i) dist[i] = i;
+       int left, leftNor;
+
+       for (int i = 1; i <= m; ++i) {
+           left = i;
+           leftNor = i - 1;
+           for (int j = 1; j <= n; ++j) {
+               int tmp = dist[j];
+               dist[j] = min(min(dist[j] + 1, left + 1), diff(word1[i - 1], word2[j - 1]) + leftNor);
+               leftNor = tmp;
+               left = dist[j];
+           }
+       }
+       return dist[n];
+    }
+private:
+    int diff(char c1, char c2) {
+        return !(c1 == c2);
+    }
+};
 
 int main() {
     std::cout << Solution().minDistance("intention", "execution") << std::endl;
