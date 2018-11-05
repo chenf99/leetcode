@@ -75,23 +75,19 @@ public:
        if (n == 0) return m;
        int dist[n + 1];
        for (int i = 0; i <= n; ++i) dist[i] = i;
-       int left, leftNor;
+       int leftNor;
 
        for (int i = 1; i <= m; ++i) {
-           left = i;
            leftNor = i - 1;
+           dist[0] = i;
            for (int j = 1; j <= n; ++j) {
                int tmp = dist[j];
-               dist[j] = min(min(dist[j] + 1, left + 1), diff(word1[i - 1], word2[j - 1]) + leftNor);
+               int diff = word1[i - 1] == word2[j - 1] ? 0 : 1;
+               dist[j] = min(min(dist[j] + 1, dist[j - 1] + 1), diff + leftNor);
                leftNor = tmp;
-               left = dist[j];
            }
        }
        return dist[n];
-    }
-private:
-    int diff(char c1, char c2) {
-        return !(c1 == c2);
     }
 };
 
