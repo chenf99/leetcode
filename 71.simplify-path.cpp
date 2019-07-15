@@ -83,31 +83,61 @@ using std::stack;
 
 class Solution {
 public:
-    void lstrip(string& str, char c = '/') {
-        while (str[0] == '/') {
-            str = str.substr(1);
-        }
-    }
+    // void lstrip(string& str, char c = '/') {
+    //     while (str[0] == '/') {
+    //         str = str.substr(1);
+    //     }
+    // }
+    /*
+        method 1
+    */
+    // string simplifyPath(string path) {
+    //     stack<string> folders;
+    //     lstrip(path);
+    //     path += "/";
+    //     while (path.length() > 0) {
+    //         string tmp = path.substr(0, path.find('/'));
+    //         if (tmp == "..") {
+    //             if (!folders.empty()) folders.pop();
+    //         }
+    //         else if (tmp != ".") folders.push(tmp);
+    //         path = path.substr(path.find('/'));
+    //         lstrip(path);
+    //     }
+    //     string result = "";
+    //     while (!folders.empty()) {
+    //         result = "/" + folders.top() + result;
+    //         folders.pop();
+    //     }
+    //     return result == "" ? "/" : result;
+    // }
+    /*
+        method 2
+    */
     string simplifyPath(string path) {
-        stack<string> s;
-        lstrip(path);
-        path += "/";
-        while (path.length() > 0) {
-            string tmp = path.substr(0, path.find('/'));
-            if (tmp == "..") {
-                if (!s.empty()) s.pop();
+        stack<string> folders;
+        string item = "";
+        for (auto c : path) {
+            if (c == '/') {
+                if (item == "..") {
+                    if (!folders.empty()) folders.pop();
+                }
+                else if (item != "." && item != "") folders.push(item);
+                item = ""; 
             }
-            else if (tmp != ".") s.push(tmp);
-            path = path.substr(path.find('/'));
-            lstrip(path);
+            else item.append(1, c);
         }
-        string result = s.empty() ? "" : s.top();
-        if (!s.empty()) s.pop();
-        while (!s.empty()) {
-            result = s.top() + "/" + result;
-            s.pop();
+        if (item == "..") {
+            if (!folders.empty()) folders.pop();
         }
-        return "/" + result;
+        else if (item != "." && item != "") folders.push(item);
+
+        string result = "";
+        while (!folders.empty()) {
+            result = "/" + folders.top() + result;
+            folders.pop();
+        }
+        return result == "" ? "/" : result;
     }
 };
 
