@@ -18,6 +18,7 @@ Output: 10
 #include <iostream>
 #include <vector>
 #include <map>
+#include <stack>
 using namespace std;
 
 //解法一
@@ -62,6 +63,7 @@ private:
 */
 
 //解法二
+/*
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
@@ -95,6 +97,27 @@ public:
             result = max(result, (right[i] - left[i] - 1) * heights[i]);
         }
         result = max(result, (right[n - 1] - left[n - 1] - 1) * heights[n - 1]);
+        return result;
+    }
+};
+*/
+
+// 解法三
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        int result = 0;
+        stack<int> tmp;
+        heights.insert(heights.begin(), 0);
+        heights.push_back(0);
+        for (int i = 0; i < heights.size(); ++i) {
+            while (!tmp.empty() && heights[i] < heights[tmp.top()]) {
+                int h = heights[tmp.top()];
+                tmp.pop();
+                result = max(result, (i - tmp.top() - 1) * h);
+            }
+            tmp.push(i);
+        }
         return result;
     }
 };
