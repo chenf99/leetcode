@@ -15,46 +15,86 @@ Output: 6
 #include<vector>
 using namespace std;
 
+// 解法一
+// class Solution {
+// public:
+//     int trap(vector<int>& height) {
+//         if (height.size() <= 2) return 0;
+//         int result = 0;
+//         int bottom = height[0];
+//         int top = 0;
+// 		int rock = 0, bar_num = 0;
+//         for (int i = 1; i < height.size(); ++i) {
+//             if (bottom <= height[i]) {
+//                 //计算水量
+//                 int water = bottom * bar_num - rock;
+//                 result += water;
+//                 bottom = height[i];
+//                 top = i;
+// 				rock = bar_num = 0;
+//             }
+//             else {
+// 				rock += height[i];
+// 				bar_num++;
+// 			}
+//         }
+//         bottom = height[height.size() - 1];
+// 		rock = bar_num = 0;
+//         for (int i = height.size() - 2; i >= top; --i) {
+//             if (bottom <= height[i]) {
+//                 //计算水量
+//                 int water = bottom * bar_num - rock;
+//                 result += water;
+//                 bottom = height[i];
+// 				rock = bar_num = 0;
+//             }
+//             else {
+// 				rock += height[i];
+// 				bar_num++;
+// 			}
+//         }
+//         return result;
+//     }
+    
+// };
+
+// 解法二
 class Solution {
 public:
     int trap(vector<int>& height) {
         if (height.size() <= 2) return 0;
         int result = 0;
-        int bottom = height[0];
         int top = 0;
-		int rock = 0, bar_num = 0;
-        for (int i = 1; i < height.size(); ++i) {
-            if (bottom <= height[i]) {
-                //计算水量
-                int water = bottom * bar_num - rock;
-                result += water;
-                bottom = height[i];
-                top = i;
-				rock = bar_num = 0;
-            }
-            else {
-				rock += height[i];
-				bar_num++;
-			}
+        for (int i = 0; i < height.size(); ++i) {
+            if (height[i] > height[top]) top = i;
         }
-        bottom = height[height.size() - 1];
-		rock = bar_num = 0;
-        for (int i = height.size() - 2; i >= top; --i) {
-            if (bottom <= height[i]) {
-                //计算水量
-                int water = bottom * bar_num - rock;
-                result += water;
-                bottom = height[i];
-				rock = bar_num = 0;
+        int bottom = 0;
+        int rock = 0, num = 0;
+        for (int i = 1; i <= top; ++i) {
+            if (height[i] >= height[bottom]) {
+                result += height[bottom] * num - rock;
+                bottom = i;
+                rock = num = 0;
             }
             else {
-				rock += height[i];
-				bar_num++;
-			}
+                rock += height[i];
+                num++;
+            }
+        }
+        bottom = height.size() - 1;
+        for (int i = height.size() -2; i >= top; --i) {
+            if (height[i] >= height[bottom]) {
+                result += height[bottom] * num - rock;
+                bottom = i;
+                rock = num = 0;
+            }
+            else {
+                rock += height[i];
+                num++;
+            }
         }
         return result;
     }
-    
 };
 
 int main() {
