@@ -32,6 +32,26 @@ using namespace std;
 //    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
 //         int m = nums1.size();
 //         int n = nums2.size();
+//         int mid = (m + n) / 2;
+//         int index1 = 0, index2 = 0;
+//         int old_tmp = 0, new_tmp = 0;;
+//         while ((index1 + index2) <= mid) {
+//             old_tmp = new_tmp;
+//             if (index1 == m) new_tmp = nums2[index2++];
+//             else if (index2 == n) new_tmp = nums1[index1++];
+//             else if (nums1[index1] < nums2[index2]) new_tmp = nums1[index1++];
+//             else new_tmp = nums2[index2++];
+//         }
+//         return (m + n) % 2 == 0 ? (old_tmp + new_tmp) / 2.0 : new_tmp;
+//    }
+// };
+
+// 解法二
+// class Solution {
+// public:
+//    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+//         int m = nums1.size();
+//         int n = nums2.size();
 //         if (m > n) return findMedianSortedArrays(nums2, nums1);
 //         int imin = 0, imax = m;
 //         int max_left = 0, min_right = 0;
@@ -54,7 +74,7 @@ using namespace std;
 //    }
 // };
 
-// 解法二
+// 解法三
 class Solution {
 public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
