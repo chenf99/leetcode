@@ -23,58 +23,64 @@ The median is (2 + 3)/2 = 2.5
 
 #include <iostream>
 #include <vector>
+#include <climits>
 using namespace std;
 
+// 解法一
+// class Solution {
+// public:
+//    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+//         int m = nums1.size();
+//         int n = nums2.size();
+//         if (m > n) return findMedianSortedArrays(nums2, nums1);
+//         int imin = 0, imax = m;
+//         int max_left = 0, min_right = 0;
+//         while (imin <= imax) {
+//             int i = (imin + imax) / 2;
+//             int j = (m + n) / 2 - i;
+//             int i_left = (i == 0 ? INT_MIN : nums1[i - 1]);
+//             int j_left = (j == 0 ? INT_MIN : nums2[j - 1]);
+//             int i_right = (i == m ? INT_MAX : nums1[i]);
+//             int j_right = (j == n ? INT_MAX : nums2[j]);
+//             if (i_left > j_right) imax = i - 1;
+//             else if (j_left > i_right) imin = i + 1;
+//             else {
+//                 max_left = max(i_left, j_left);
+//                 min_right = min(i_right, j_right);
+//                 break;
+//             }
+//         }
+//         return (m + n) % 2 == 0 ? (max_left + min_right) / 2.0 : min_right;
+//    }
+// };
+
+// 解法二
 class Solution {
 public:
-    /*
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        int m = nums1.size();
-        int n = nums2.size();
-        if (m == 0) return n % 2 == 0 ? (nums2[n/2 - 1] + nums2[n/2]) / 2.0 : nums2[n/2];
-        else if (n == 0) return m % 2 == 0 ? (nums1[m/2 - 1] + nums1[m/2]) / 2.0 : nums1[m/2];
-        int mid = (m + n) / 2;
-        vector<int> sortedArr;
-        for (int i = 0, j = 0; i + j <= mid; ) {
-            if (i == m) sortedArr.push_back(nums2[j++]);
-            else if (j == n) sortedArr.push_back(nums1[i++]);
-            else if (nums1[i] <= nums2[j]) sortedArr.push_back(nums1[i++]);
-            else sortedArr.push_back(nums2[j++]);
-        }
-        return (m + n) % 2 == 0 ? (sortedArr[mid - 1] + sortedArr[mid]) / 2.0 : sortedArr[mid];
+        int m = nums1.size(), n = nums2.size();
+        if ((m + n) % 2 == 0) 
+            return (findKElement((m + n) / 2 + 1, nums1, nums2) + findKElement((m + n) / 2, nums1, nums2)) / 2;
+        else 
+            return findKElement((m + n + 1) / 2, nums1, nums2);
     }
-    */
-   double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-       int m = nums1.size();
-       int n = nums2.size();
-       if (m > n) {     //确保n>=m
-            nums1.swap(nums2);
-            int temp = m;
-            m = n;
-            n = temp;
-       }
-       int imin = 0, imax = m, mid = (m + n) / 2;
-       while (imin <= imax) {
-            int i = (imin + imax) / 2;
-            int j = mid - i;
-            if (i > imin && nums1[i - 1] > nums2[j]) imax = i - 1;
-            else if (i < imax && nums2[j - 1] > nums1[i]) imin = i + 1;
-            else {//找到了使max(left) < min(right)的i
-                int minRight;
-                if (i == m) minRight = nums2[j];
-                else if (j == n) minRight = nums1[i];
-                else minRight = min(nums1[i], nums2[j]);
-                if ((m + n) % 2 != 0) return minRight;
-
-                int maxLeft;
-                if (i == 0) maxLeft = nums2[j - 1];
-                else if (j == 0) maxLeft = nums1[i - 1];
-                else maxLeft = max(nums1[i - 1], nums2[j - 1]);
-
-                return (maxLeft + minRight) / 2.0;
+    double findKElement(int k, vector<int> nums1, vector<int> nums2){
+        while (k > 1 && !nums1.empty() && !nums2.empty()) {
+            int a1 = min(k / 2 - 1, (int)nums1.size() - 1);
+            int a2 = min(k / 2 - 1, (int)nums2.size() - 1);
+            if (nums1[a1] <= nums2[a2]) {
+                nums1.erase(nums1.begin(), nums1.begin() + a1 + 1);
+                k -= (a1 + 1);
             }
-       }
-   }
+            else {
+                nums2.erase(nums2.begin(), nums2.begin() + a2 + 1);
+                k -= (a2 + 1);
+            }
+        }
+        if (nums1.empty()) return (double)nums2[k - 1];
+        if (nums2.empty()) return (double)nums1[k - 1];
+        return (double)min(nums1[0], nums2[0]);
+    }
 };
 
 int main() {
