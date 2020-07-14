@@ -15,30 +15,44 @@
  * };
  */
 // 解法一
+// class Solution {
+// public:
+//     TreeNode* node = NULL;
+//     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+//         findChild(root, p, q);
+//         return node;
+//     }
+// private:
+//     bool findChild(TreeNode* root, TreeNode* p, TreeNode* q) {
+//         if (!root) return false;
+//         bool left = findChild(root->left, p, q), right = findChild(root->right, p, q);
+//         // p和q分别在root的左右两个子树中
+//         if (left && right) {
+//             node = root;
+//             return true;
+//         }
+//         bool flag1 = root == p || root == q;
+//         bool flag2 = left || right;
+//         // p和q一个是root，一个在root的子树中
+//         if (flag1 && flag2) {
+//             node = root;
+//             return true;
+//         }
+//         return flag1 || flag2;
+//     }
+// };
+
+// 解法一优化
 class Solution {
 public:
-    TreeNode* node = NULL;
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        findChild(root, p, q);
-        return node;
-    }
-private:
-    bool findChild(TreeNode* root, TreeNode* p, TreeNode* q) {
-        if (!root) return false;
-        bool left = findChild(root->left, p, q), right = findChild(root->right, p, q);
-        // p和q分别在root的左右两个子树中
-        if (left && right) {
-            node = root;
-            return true;
-        }
-        bool flag1 = root == p || root == q;
-        bool flag2 = left || right;
-        // p和q一个是root，一个在root的子树中
-        if (flag1 && flag2) {
-            node = root;
-            return true;
-        }
-        return flag1 || flag2;
+        if (!root) return nullptr;
+        if (root == p || root == q) return root;
+        TreeNode* left = lowestCommonAncestor(root->left, p, q);
+        TreeNode* right = lowestCommonAncestor(root->right, p, q);
+        if (left && right) return root;
+        if (!left) return right;
+        else return left;
     }
 };
 
