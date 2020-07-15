@@ -48,7 +48,6 @@
  * 
  */
 #include <string>
-#include <algorithm>
 #include <iostream>
 using std::string;
 using std::max;
@@ -56,19 +55,20 @@ using std::max;
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-        string curr = "";
-        int max_len = 0;
-        for (int i = 0; i < s.length(); ++i) {
-            if (curr.find(s[i]) == string::npos) {
-                curr += s[i];
+        if (s.length() <= 1) return s.length();
+        int start = 0, result = 1;
+        for (int i = 1; i < s.length(); ++i) {
+            bool flag = false;
+            for (int j = start; j < i; ++j) {
+                if (s[j] == s[i]) {
+                    start = j + 1;
+                    flag = true;
+                    break;
+                }
             }
-            else {
-                max_len = max(max_len, (int)curr.length());
-                curr = curr.substr(curr.find(s[i]) + 1) + s[i];
-            }
+            if (!flag) result = max(result, i - start + 1);
         }
-        max_len = max(max_len, (int)curr.length());
-        return max_len;
+        return result;
     }
 };
 
