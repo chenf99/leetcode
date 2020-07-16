@@ -25,21 +25,17 @@ using namespace std;
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
-        if (nums.size() == 0) return 0;
-        //L[i]表示以第i个数结尾的最长递增子序列的长度
-        int n = nums.size();
-        int L[n];
-        int max_L;//max_L表示结果
-        L[0] = max_L = 1;
-        for (int i = 1; i < n; ++i) {
-            int tmp = 0;//tmp表示与结点i相连的上一个结点的最大L值
+        int dp[nums.size()]; // dp[i]:以第i个数字为结尾的最长上升子序列长度
+        int result = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            int max_dp = 0;
             for (int j = 0; j < i; ++j) {
-                if (nums[j] < nums[i] && tmp < L[j]) tmp = L[j];
+                if (nums[j] < nums[i] && dp[j] > max_dp) max_dp = dp[j];
             }
-            L[i] = 1 + tmp;
-            if (max_L < L[i]) max_L = L[i];
+            dp[i] = max_dp + 1;
+            result = max(result, dp[i]);
         }
-        return max_L;
+        return result;
     }
 };
 */
