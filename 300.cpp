@@ -45,24 +45,19 @@ class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
         if (nums.size() == 0) return 0;
-        //d[k]表示长度为k的子序列的最末元素，
-        //如果有多个这种元素，取最小的那个
-        //注意d[k]是递增序列
-        int n = nums.size();
-        int d[n + 1], len;//len表示当前最长子序列的长度
-        len = 1;
-        d[1] = nums[0];
-        for (int i = 1; i < n; ++i) {
-            if (nums[i] > d[len]) d[++len] = nums[i];
+        int dp[nums.size() + 1]; // dp[i]: 长度为i的最长上升子序列的最末元素的最小值
+        int len = 1;
+        dp[1] = nums[0];
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] > dp[len]) dp[++len] = nums[i];
             else {
-                //用二分法查找大于等于nums[i]的第一个d[j]
                 int left = 1, right = len;
                 while (left <= right) {
                     int mid = (left + right) / 2;
-                    if (d[mid] >= nums[i]) right = mid - 1;
+                    if (dp[mid] >= nums[i]) right = mid - 1;
                     else left = mid + 1;
                 }
-                d[left] = nums[i];
+                dp[left] = nums[i];
             }
         }
         return len;
