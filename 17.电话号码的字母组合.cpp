@@ -41,7 +41,8 @@ public:
     vector<string> letterCombinations(string digits) {
         if (!digits.size()) return {};
         vector<string> result;
-        dfs(result, digits, 0);
+        string tmp = "";
+        dfs(result, tmp, digits, 0);
         return result;
     }
 private:
@@ -49,15 +50,14 @@ private:
         {'2', {"a","b","c"}}, {'3', {"d","e","f"}}, {'4', {"g","h","i"}}, \
         {'5', {"j","k","l"}}, {'6', {"m","n","o"}}, {'7', {"p","q","r","s"}}, \
         {'8', {"t","u","v"}}, {'9', {"w","x","y","z"}}};
-    string tmp = "";
-    void dfs(vector<string>& result, const string& digits, int index) {
+    void dfs(vector<string>& result, string& tmp, const string& digits, int index) {
         if (index == digits.size()) {
             result.push_back(tmp);
             return;
         }
         for (int i = 0; i < m[digits[index]].size(); ++i) {
             tmp += m[digits[index]][i];
-            dfs(result, digits, index + 1);
+            dfs(result, tmp, digits, index + 1);
             tmp.pop_back();
         }
     }
