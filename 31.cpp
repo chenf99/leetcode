@@ -25,28 +25,21 @@ using namespace std;
 class Solution {
 public:
     void nextPermutation(vector<int>& nums) {
-        int len = nums.size();
-        if (len == 1) return;
-        bool flag = false;  //是否存在下一个置换
-        int index;
-        for (index = len - 1; index > 0; --index) {
-            if (nums[index] > nums[index - 1]) {
-                flag = true;
-                break;
+        if (nums.size() <= 1) return;
+        int index = nums.size() - 1;
+        while (index >= 1 && nums[index] <= nums[index - 1]) index--;
+        if (index == 0) reverse(nums.begin(), nums.end());
+        else {
+            reverse(nums.begin() + index, nums.end());
+            for (int i = index; i < nums.size(); ++i) {
+                if (nums[i] > nums[index - 1]) {
+                    int tmp = nums[index - 1];
+                    nums[index - 1] = nums[i];
+                    nums[i] = tmp;
+                    break;
+                }
             }
         }
-        if (flag == false) return reverse(nums.begin(), nums.end());//没有下一个置换
-        reverse(nums.begin() + index, nums.end());
-        int small_index = -1;
-        for (int i = index; i < len; ++i) {
-            if (nums[i] > nums[index - 1]) {
-                if (small_index == -1) small_index = i;
-                else if (nums[i] < nums[small_index]) small_index = i;
-            }
-        }
-        int temp = nums[small_index];
-        nums[small_index] = nums[index - 1];
-        nums[index - 1] = temp;
     }
 };
 
