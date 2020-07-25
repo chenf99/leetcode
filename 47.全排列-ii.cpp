@@ -1,20 +1,21 @@
 /*
- * @lc app=leetcode.cn id=46 lang=cpp
+ * @lc app=leetcode.cn id=47 lang=cpp
  *
- * [46] 全排列
+ * [47] 全排列 II
  */
 
 // @lc code=start
 #include <vector>
-#include <list>
+#include <algorithm>
 using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> permute(vector<int>& nums) {
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
         vector<vector<int>> result;
         vector<int> permutation;
         vector<bool> used(nums.size(), false);
+        sort(nums.begin(), nums.end());
         dfs(result, permutation, nums, used);
         return result;
     }
@@ -25,6 +26,7 @@ private:
             return;
         }
         for (int i = 0; i < nums.size(); ++i) {
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) continue;
             if (!used[i]) {
                 permutation.emplace_back(nums[i]);
                 used[i] = true;
