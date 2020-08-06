@@ -14,6 +14,8 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+// 解法一
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
@@ -31,5 +33,33 @@ private:
         return root;
     }
 };
+
+// 解法二
+// class Solution {
+// public:
+//     TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+//         int n = inorder.size();
+//         if (!n) return nullptr;
+//         int post_index = n - 1, in_index = n - 1;
+//         TreeNode* root = new TreeNode(postorder[post_index--]);
+//         stack<TreeNode*> s;
+//         s.push(root);
+//         while (post_index >= 0) {
+//             TreeNode* node = s.top();
+//             TreeNode* tmp = new TreeNode(postorder[post_index--]);
+//             if (node->val != inorder[in_index]) node->right = tmp;
+//             else {
+//                 while (!s.empty() && s.top()->val == inorder[in_index]) {
+//                     node = s.top();
+//                     s.pop();
+//                     in_index--;
+//                 }
+//                 node->left = tmp;
+//             }
+//             s.push(tmp);
+//         }
+//         return root;
+//     }
+// };
 // @lc code=end
 

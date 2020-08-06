@@ -18,6 +18,7 @@
 #include <unordered_map>
 using namespace std;
 
+// 解法一
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
@@ -35,4 +36,32 @@ private:
         return root;
     }
 };
+
+// 解法二
+// class Solution {
+// public:
+//     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+//         stack<TreeNode*> s;
+//         int n = preorder.size();
+//         if (!n) return nullptr;
+//         int index1 = 0, index2 = 0;
+//         TreeNode* root = new TreeNode(preorder[index1++]);
+//         s.push(root);
+//         while (index1 < n) {
+//             TreeNode* node = s.top();
+//             TreeNode* tmp = new TreeNode(preorder[index1++]);
+//             if (node->val == inorder[index2]) {
+//                 while (!s.empty() && s.top()->val == inorder[index2]) {
+//                     node = s.top();
+//                     s.pop();
+//                     index2++;
+//                 }
+//                 node->right = tmp;
+//             }
+//             else node->left = tmp;
+//             s.push(tmp);
+//         }
+//         return root;
+//     }
+// };
 // @lc code=end
