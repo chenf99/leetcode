@@ -54,6 +54,42 @@ private:
 };
 
 // 解法二
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        int n = nums.size();
+        buildMaxHeap(nums);
+        for (int i = n - 1; i >= (int)nums.size() - k; --i) {
+            swap(nums[0], nums[i]);
+            n--;
+            heapify(nums, 0, n);
+        }
+        return nums[nums.size() - k];
+    }
+private:
+    void buildMaxHeap(vector<int>& nums) {
+        for (int i = nums.size() / 2 - 1; i >= 0; --i) {
+            heapify(nums, i, nums.size());
+        }
+    }
 
+    void heapify(vector<int>& nums, int i, int n) {
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+        int largestIndex = i;
+        if (left < n && nums[largestIndex] < nums[left]) largestIndex = left;
+        if (right < n && nums[largestIndex] < nums[right]) largestIndex = right;
+        if (largestIndex != i) {
+            swap(nums[largestIndex], nums[i]);
+            heapify(nums, largestIndex, n);
+        }
+    }
+
+    void swap(int& num1, int& num2) {
+        int tmp = num1;
+        num1 = num2;
+        num2 = tmp;
+    }
+};
 // @lc code=end
 
