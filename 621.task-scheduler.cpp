@@ -44,42 +44,90 @@
  * 
  */
 #include <vector>
-#include <iostream>
 #include <queue>
-#include <unordered_map>
-using std::vector;
-using std::priority_queue;
-using std::unordered_map;
+#include <algorithm>
+using namespace std;
 
+// 解法一
 class Solution {
 public:
     int leastInterval(vector<char>& tasks, int n) {
-        int intervals = 0;
-        unordered_map<char, int> counts;
-        for (auto t : tasks) counts[t]++;
-        priority_queue<int> pq;
-        for (auto count : counts) pq.push(count.second);
-        int cycle = n + 1;
-        int all_time = 0;
-        while (!pq.empty()) {
-            int time = 0;
-            vector<int> tmp;
-            for (int i = 0; i < cycle; ++i) {
-                if (!pq.empty()) {
-                    tmp.push_back(pq.top());
-                    pq.pop();
-                    time++;
-                }
+        int hash[26] = {0};
+        for (auto c : tasks) hash[c - 'A']++;
+        int num = 0;
+        for (int i = 0; i < 26; ++i) num += hash[i] > 0;
+        int count = 0;
+        while (num) {
+            sort(hash, hash + 26, [](int& a, int& b) { return a > b;});
+            int i = 0;
+            while (i <= n && hash[i] > 0) {
+                if (--hash[i] == 0) num--;
+                i++;
             }
-            for (auto i : tmp) 
-                if (--i) pq.push(i);
-            all_time += !pq.empty() ? cycle : time;
+            if (num == 0) count += i;
+            else count += n + 1;
         }
-        return all_time;
+        return count;
     }
 };
 
-// int main() {
-//     vector<char> tasks{'A','A','A','B','B','B'};
-//     std::cout << Solution().leastInterval(tasks, 2) << std::endl;
-// }
+// 解法二
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int hash[26] = {0};
+        for (auto c : tasks) hash[c - 'A']++;
+        priority_queue<int> pq;
+        for (int i = 0; i < 26; ++i) if (hash[i] > 0) pq.push(hash[i]);
+        int count = 0;
+        while (!pq.empty()) {
+            int i = 0;
+            vector<int> tmp;
+            while (i <= n && !pq.empty()) {
+                int num = pq.top();
+                pq.pop();
+                if (--num > 0) tmp.push_back(num);
+                i++;
+            }
+            for (auto num : tmp) pq.push(num);
+            count += pq.empty() ? i : n + 1;
+        }
+        return count;
+    }
+};
+
+// 解法三
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int hash[26] = {0};
+        for (auto c : tasks) hash[c - 'A']++;
+        int count = 0;
+        sort(hash, hash + 26);
+        int max = hash[25];
+        int occupied = max, idle = (max - 1) * n;
+        for (int i = 24; i >= 0; --i) {
+            if (hash[i]) {
+                if (hash[i] > idle) return tasks.size();
+                occupied += hash[i];
+                if (hash[i] <= max - 1) idle -= hash[i];
+                else idle -= hash[i] - 1;
+            }
+        }
+        return occupied + idle;
+    }
+};
+
+// 解法四（解法三的优化）
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int hash[26] = {0};
+        for (auto c : tasks) hash[c - 'A']++;
+        int count = 0;
+        sort(hash, hash + 26, greater<int>());
+        int i = 1;
+        while (i < 26 && hash[i] == hash[0]) i++;
+        return max((int)tasks.size(), i + (hash[0] - 1) * (n + 1));
+    }
+};
