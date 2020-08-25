@@ -49,20 +49,21 @@ public class Codec {
 
     // Decodes your encoded data to tree.
     public TreeNode deserialize(String data) {
+        String[] new_data = data.split(",");
         TreeNode root = null;
         int[] index = {0};
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
-        Integer num = getNum(data, index);
+        Integer num = getNum(new_data, index);
         if (num != null) {
             root = new TreeNode(num.intValue());
             queue.offer(root);
         }
-        while (index[0] < data.length()) {
+        while (index[0] < new_data.length) {
             int n = queue.size();
             for (int i = 0; i < n; ++i) {
                 TreeNode node = queue.poll();
-                Integer num1 = getNum(data, index);
-                Integer num2 = getNum(data, index);
+                Integer num1 = getNum(new_data, index);
+                Integer num2 = getNum(new_data, index);
                 if (num1 != null) {
                     node.left = new TreeNode(num1.intValue());
                     queue.offer(node.left);
@@ -76,21 +77,10 @@ public class Codec {
         return root;
     }
 
-    private Integer getNum(String data, int[] index) {
-        Integer ans = null;
-        char c = data.charAt(index[0]);
-        if (c != 'n') {
-            if (c == '-') index[0]++;
-            int num = 0;
-            while (Character.isDigit(data.charAt(index[0]))) {
-                num = num * 10 + data.charAt(index[0]++) - '0';
-            }
-            index[0]++;
-            if (c == '-') num *= -1;
-            ans = Integer.valueOf(num);
-        }
-        else index[0] += 5;
-        return ans;
+    private Integer getNum(String[] new_data, int[] index) {
+        String str = new_data[index[0]++];
+        if (str.equals("null")) return null;
+        return Integer.valueOf(str);
     }
 }
 
